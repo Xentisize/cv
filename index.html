@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Vue.js to Complete</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css"
+		/>
+	</head>
+	<body>
+		<div id="app">
+			<div class="container">
+				<form>
+					<div class="field">
+						<label class="label" for="filterField">
+							Field:
+							<div class="control">
+								<div class="select">
+									<select
+										name="filterField"
+										id="filterField"
+										@change="changeFilter($event)"
+									>
+										<option value="">Disable filters</option>
+										<option value="isActive">Active Users</option>
+										<option value="name">Name</option>
+										<option value="email">Email</option>
+										<option value="balance">Balance</option>
+										<option value="registered">Date registered</option>
+									</select>
+								</div>
+							</div>
+						</label>
+					</div>
+
+					<div
+						class="field"
+						v-show="this.filter.field && !isActiveFilterSelected()"
+					>
+						<label class="label" for="filterQuery">
+							Query:
+							<div class="control">
+								<input
+									type="text"
+									name="filterQuery"
+									id="filterQuery"
+									class="input"
+									v-model="filter.query"
+								/>
+							</div>
+						</label>
+					</div>
+
+					<div class="field" v-show="isActiveFilterSelected()">
+						<div class="control">
+							<span>
+								Active:
+								<label class="radio" for="userStateActive">
+									Yes:
+									<input
+										type="radio"
+										name="userStateActive"
+										id="userStateActive"
+										:value="true"
+										class="radio"
+										v-model="filter.query"
+										selected
+									/>
+								</label>
+								<label class="radio" for="userStateInactive">
+									No:
+									<input
+										type="radio"
+										name="userStateInactive"
+										id="userStateInactive"
+										:value="false"
+										class="radio"
+										v-model="filter.query"
+									/>
+								</label>
+							</span>
+						</div>
+					</div>
+				</form>
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Balance</th>
+							<th>Registered</th>
+							<th>Active</th>
+						</tr>
+					</thead>
+					<tbody>
+						<template v-for="individual in people">
+							<team-member :person="individual"></team-member>
+						</template>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script type="text/x-template" id="team-member-template">
+			<tr v-show="filterRow(person)">
+			     <td>{{ person.name }}</td>
+			     <td>
+			       <a :href="'mailto:' + person.email">{{ person.email }}</a>
+			     </td>
+			     <td :class="balanceClass">
+			       {{ balance }}
+			     </td>
+			     <td>{{ dateRegistered }}</td>
+			     <td :class="activeClass">
+			       {{ status }}
+			     </td>
+			   </tr>
+		</script>
+		<script>
+			const people = [
+				{
+					index: 0,
+					guid: "a12f677a-1a66-4b28-a15e-a3f9fd38a8ea",
+					isActive: true,
+					balance: 2582.29,
+					name: "Tabitha Nolan",
+					email: "tabithanolan@pivitol.com",
+					registered: "2014-06-22T12:39:58"
+				},
+				{
+					index: 1,
+					guid: "41326e72-f9df-4ca3-8eba-dec8c67a602d",
+					isActive: true,
+					balance: 1995.34,
+					name: "Aurora Ochoa",
+					email: "auroraochoa@pivitol.com",
+					registered: "2015-01-29T10:35:28"
+				},
+				{
+					index: 2,
+					guid: "ac843f69-b3e7-43d2-88d0-8a3602c73bd5",
+					isActive: true,
+					balance: 1454.9,
+					name: "Latonya Hoover",
+					email: "latonyahoover@pivitol.com",
+					registered: "2019-01-29T04:10:09"
+				},
+				{
+					index: 3,
+					guid: "56d96a7f-416b-4fc6-ae64-b37a904392e3",
+					isActive: false,
+					balance: 1821.22,
+					name: "Cornelia Rhodes",
+					email: "corneliarhodes@pivitol.com",
+					registered: "2014-02-03T04:22:12"
+				},
+				{
+					index: 4,
+					guid: "fa812872-0ca9-4864-99a1-f3d63a6975dc",
+					isActive: false,
+					balance: 1307.74,
+					name: "Tonya Green",
+					email: "tonyagreen@pivitol.com",
+					registered: "2016-08-11T10:14:12"
+				},
+				{
+					index: 5,
+					guid: "801bda6f-91ff-45bc-9e4c-cff97ba6b421",
+					isActive: true,
+					balance: 2749.79,
+					name: "Foley Waters",
+					email: "foleywaters@pivitol.com",
+					registered: "2018-12-30T09:11:12"
+				},
+				{
+					index: 6,
+					guid: "147e52bb-e5a9-42c2-9bcc-341211784958",
+					isActive: true,
+					balance: 1167.58,
+					name: "Vazquez Nicholson",
+					email: "vazqueznicholson@pivitol.com",
+					registered: "2014-07-20T05:37:38"
+				},
+				{
+					index: 7,
+					guid: "a65eb156-3f5f-41a0-bf78-d0c4dcb47b37",
+					isActive: false,
+					balance: 3944.55,
+					name: "Madge Young",
+					email: "madgeyoung@pivitol.com",
+					registered: "2017-12-26T04:42:57"
+				},
+				{
+					index: 8,
+					guid: "4221d9d1-40f6-4b78-814d-e8f962bc821b",
+					isActive: true,
+					balance: 1803.02,
+					name: "Lynn Mcclure",
+					email: "lynnmcclure@pivitol.com",
+					registered: "2018-11-21T06:49:24"
+				},
+				{
+					index: 9,
+					guid: "00b7df91-e8d4-4895-b987-a0f295db9f14",
+					isActive: true,
+					balance: 3274.79,
+					name: "Theresa Gallagher",
+					email: "theresagallagher@pivitol.com",
+					registered: "2014-09-07T02:50:06"
+				}
+			]
+
+			Vue.component("team-member", {
+				template: "#team-member-template",
+
+				data() {
+					return {
+						currency: "$"
+					}
+				},
+
+				props: {
+					person: Object
+				},
+
+				computed: {
+					activeClass() {
+						return this.person.isActive ? "is-primary" : "is-danger"
+					},
+
+					balanceClass() {
+						let balanceLevel = "is-success"
+						if (this.person.balance < 2000) {
+							balanceLevel = "is-danger"
+						} else if (this.person.balance < 3000) {
+							balanceLevel = "is-warning"
+						}
+						let increasing = false
+						balance = this.person.balance / 1000
+						if (Math.round(balance) == Math.ceil(balance)) {
+							increasinig = "increasing"
+						}
+
+						return [balanceLevel, increasing]
+					},
+
+					balance() {
+						return this.currency + this.person.balance.toFixed(2)
+					},
+
+					dateRegistered() {
+						let registered = new Date(this.person.registered)
+						return registered.toLocaleString("en-US")
+					},
+
+					status() {
+						return this.person.isActive ? "Active" : "Inactive"
+					}
+				}
+			})
+
+			const app = new Vue({
+				el: "#app",
+
+				data: {
+					people: people,
+					filter: {
+						field: "",
+						query: "",
+						userState: ""
+					}
+				},
+
+				methods: {
+					isActiveFilterSelected() {
+						return this.filter.field === "isActive"
+					},
+
+					filterRow(person) {
+						let visible = true
+						let field = this.filter.field
+						let query = this.filter.query
+
+						if (field) {
+							if (this.isActiveFilterSelected()) {
+								visible =
+									typeof query === "boolean" ? query === person.isActive : true
+							} else {
+								query = String(query)
+								field = person[field]
+
+								if (typeof field === "number") {
+									query = query.replace(this.currency, "")
+									try {
+										visible = eval(field + query)
+									} catch (e) {}
+								} else {
+									field = field.toLowerCase()
+									visible = field.includes(query.toLowerCase())
+								}
+							}
+						}
+						return visible
+					},
+
+					changeFilter(event) {
+						this.filter.query = ""
+						this.filter.field = event.target.value
+					}
+				}
+			})
+		</script>
+	</body>
+</html>
